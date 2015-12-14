@@ -14,5 +14,19 @@ append body
                     label
                         input(type='checkbox', value='remember-me')
                         | Remember me
-            button.btn.btn-lg.btn-primary.btn-block(type='submit') Sign in
-
+            button#loginButton.btn.btn-lg.btn-primary.btn-block(type='button') Sign in
+  script.
+    $(document).ready(function() {
+        $('#loginButton').click(function(e) {
+            $.post('/login', {
+                user_email: $('#inputEmail').val(),
+                user_password: $('#inputPassword').val()
+            }, function(data) {
+                if (data.error) {
+                    alert(data.message);
+                } else {
+                    window.location = data.redirect;
+                }
+            });
+        });
+    });

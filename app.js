@@ -9,17 +9,18 @@ var session = require('express-session');
 var redisStore = require('connect-redis')(session);
 
 var rc = require('./redis/redisclient');
+
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var login = require('./routes/login');
 
 var app = express();
-
 
 app.use(cookieParser('insuredsite'));
 app.use(session(
     {
         secret: 'sessioninsuredsite',
-        store: new redisStore({client: rc.client}),
+        store: new redisStore({client: rc.client, ttl: rc.redisTTL}),
         saveUninitialized: false,
         resave: false
     }
@@ -57,6 +58,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/users', users);
+app.use('/login', login);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -88,7 +90,5 @@ app.use(function(err, req, res, next) {
     error: {}
   });
 });
-
-
 
 module.exports = app;

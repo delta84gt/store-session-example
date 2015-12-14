@@ -3,7 +3,12 @@ var router = express.Router();
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+  if(req.session == null || !req.session.key) {
+    res.redirect('/');
+    //res.json({"error" : true, "message" : "Please login first."});
+  } else {
+    res.send('respond with a resource');
+  }
 });
 
 module.exports = router;
